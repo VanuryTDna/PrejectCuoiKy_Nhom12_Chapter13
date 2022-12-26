@@ -40,6 +40,7 @@ void DonaldKnuth(int i) {
 			control[i] = 0;
 			demSoLanDaLam[i]++;
 		}
+		flag = 1;
 	}
 }
 
