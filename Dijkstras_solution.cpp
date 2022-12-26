@@ -47,4 +47,5 @@ int main()
 	may3.join();
 	may4.join();
 	may5.join();
+	return 0;
 }
