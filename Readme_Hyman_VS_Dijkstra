@@ -1,0 +1,38 @@
+•	Xin chào thầy ạ! Em tên là Trần Quốc Cường là thành viên trong nhóm 12. Sau đây nhóm chúng em xin phép trình bày chủ đề mà tụi em đã tiêm tìm hiểu trong thời gian qua.
+•	Và chủ để là tụi em tìm hiểu là Chapter 13: Additional Comments on a Problem in Concurrent Programming Control tạm dịch là Nhận xét bổ sung về sự cố trong điều khiển lập trình đồng thời 
+•	Phần trình bày của chúng em gồm 3 thành viên:
+Phần giải pháp của Hyman và Dijkstra sẽ do em trình bày
+Giải pháp của Knuth, Code bổ sung của Brujin và hướng phát triển sẽ bạn Trần Văn Duy đảm nhận
+Cuối cùng là phần ứng dụng sẽ do bạn Nguyễn Nhật Duy thực hiện.
+•	Nội dung chính của bài báo là những nhận xét, bình luận bổ sung liên quan đến vấn đề về sự kiểm soát trong lập trình đồng thời. Problem in concurrent programming là vấn đề “loại trừ lẫn nhau" được nảy sinh khi các máy cùng thực hiện một chương trình với tốc độ không thể đoán trước và có thể dẫn đến xung đột trong quá trình thực hiện.
+•	Và sau đây em xin phép trình bày giải pháp đầu tiên
+Giải pháp Hyman
+Critical section là phần chương trình mà các máy muốn thực hiện
+K là máy thực hiện phần critical section
+Mảng bool b
+Giải pháp này chỉ mô phỏng cho 2 máy 0 và 1
+Tại C0 thì b[i] = false và sẽ không thay đổi cho đến khi kết thúc phần critical section của mình. Sau đó b[i] sẽ được gán lại true như ban đầu. -> Điều này cho thấy b[i] thay đổi giá trị như một tín hiệu cho biết máy i bắt đầu thực hiện hay đã thực hiện xong phân critical section.
+Tại C1 ta có điều kiện nếu k != i thì sẽ vào thực hiện C2. Điều này đảm bảo cho các máy khác k  sẽ vào vòng lặp C2 đợi cho đến khi k = i thì thoát khỏi vòng lặp C1 và thực hiện phần critical section của minh.
+Vào sau đây em xin phép chạy thử code demo mà em đã viết dựa trên giải pháp của tác giả.
+Thế nhưng trong một số trường hợp thì giải pháp của Hyman vẫn chưa giải quyết được. 
+Nếu ban đầu k = 0 và  b[ 0 ] = b[ 1 ] = true , và giả sử máy tính 1 có thể bắt đầu quá trình bằng cách đặt b[1 ] false, sau đó tìm thấy b[ 0 ] = true trong điều kiện của C2 do không thỏa mãn điều kiện vòng lặp C2 nên sau đó  k gán bằng 1 vì k = i nên sẽ thoát khỏi vòng C1 và thực hiện phần critical section của mình.
+Nhưng nếu cùng lúc  máy 1 thoát khỏi vòng lặp C2  mà  máy  0  bắt đầu thực hiện chương trình đặt b[ 0 ] = false và tìm thấy k = i (k = 0) ở C1  trước khi  k được gán = 1, thì nó cũng sẽ thoát khỏi vòng lặp C1 và tiến vào thực hiện phần critical section. Nhưng máy tính 1 ngay sau đó cùng đặt k = 1 và thực hiện critical section của nó cùng một lúc. 
+	Thế nên giải pháp của Hyman vẫn chưa giải quyết được  vấn đề kiểm soát lặp trình đồng thời.
+Và sau đây em xin trình bày một giải khác khó bị tấn công hơn đó chính là giải pháp của Dijktra
+Giải pháp của Dijkstra
+Có them mảng Bool C 
+Tại L0 B[i] được gán là false và luôn giữ giá trị là false trong suốt quá trình thực hiện cho đến khi thực hiện xong phần Critical section và sau đó được gán giá trị là true.
+	 Do đó có thể thấy sự thay đổi của B[i] giống như là một tín hiệu cho biết máy I muốn thực hiện Critical section.
+Tại L1 chúng ta cũng sẽ có điều kiện k != i để đảm bảo cho các máy khác k  sẽ đợi cho đến khi k = i thì thoát khỏi vòng lặp L1 và thực hiện một vòng kiểm tra ở L4.
+Tại L4 C[i] sẽ được gán là false và cũng sẽ không thay đổi cho tới khi thực hiện xong phần critical section thì mới được gán lại là true. 
+	Vì thế sự thay đổi của C[i] cũng như một tín hiệu cho biết máy đang thực hiện phần critical section.
+Như vậy chúng ta chi có thể vào phần Critical section khi C[i] = false; 
+Và vòng lặp for kiểm tra tất cả các máy khác i  có cùng mang giá trị là false hay không. Vì nếu có một phần tử nào khác cũng có giá trị là false chúng ta sẽ quay lại L1. 
+	Chỉ có một cách vào được Critical section là có một phần tử C[i] false và các phần khác là true.
+Do đó giải pháp của dijktra sẽ không xảy ra trường hợp hợp các máy thực hiện chương trình đồng thời.
+Để trực quang hơn thì Sau đây em xin chạy thử chương trình demo mà em viết dựa trên giải pháp của tác giả để xem nó hoạt động ra sao
+Và sau đây là các giải pháp còn lại và hướng phát triển do bạn Văn Duy trình bày.
+Nhiều máy tính đang cố vào phần Critical section và có ít nhất một máy thành công.
+Nếu máy k không nằm trong các vòng lặp và B[i] sẽ được gán là true.
+Tất cả các máy đang trong vòng lặp sẽ tìm k != i. Vì thế một trong các máy sẽ thõa mãn điều kiện ở L3 và sau đó k sẽ được gán là i. Một khi k = I thì B[k] trở thành false
+	Điều này có nghĩa là không có other processes nào có thể gán giá trị mới cho k cho tới khi thực hiện xong critical section.
